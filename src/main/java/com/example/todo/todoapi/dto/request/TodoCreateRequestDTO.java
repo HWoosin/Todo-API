@@ -17,7 +17,7 @@ public class TodoCreateRequestDTO {
 
     @NotBlank
     @Size(min = 2, max = 10 )
-    private String title;
+    private String title; //id는 자동생성, done은 일단 false이기 때문에 title만 받아!
 
     //dto를 엔터티로 변환
     public Todo toEntity() {
