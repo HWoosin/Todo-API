@@ -19,6 +19,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("api/todos")
+@CrossOrigin(origins = "http://localhost:3000")
 public class TodoController {
 
     private final TodoService todoService;
@@ -83,7 +84,7 @@ public class TodoController {
 
         try {
             todoService.modify(dto);
-            return ResponseEntity.ok("수정완료");
+            return ResponseEntity.ok().body("Update Success");
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(TodoListResponseDTO.builder().error(e.getMessage()));
         }
