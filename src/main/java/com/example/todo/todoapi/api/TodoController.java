@@ -83,8 +83,8 @@ public class TodoController {
         }
 
         try {
-            todoService.modify(dto);
-            return ResponseEntity.ok().body("Update Success");
+            TodoListResponseDTO responseDTO = todoService.modify(dto);
+            return ResponseEntity.ok().body(responseDTO);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(TodoListResponseDTO.builder().error(e.getMessage()));
         }
