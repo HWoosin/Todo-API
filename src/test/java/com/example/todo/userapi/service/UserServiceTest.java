@@ -36,7 +36,7 @@ class UserServiceTest {
         //param1: 어떤 에러가 발생할 지 에러 클래스를 적음.
         //param2: 에러가 발생하는 상황을 전달.
         assertThrows(RuntimeException.class,
-                () ->{ userService.create(dto); }//이걸 전달하면 에러가 난다
+                () ->{ userService.create(dto); }//이걸 전달하면 에러가 난다, 실패를 하겠지만 회원가입은 create메소드를 통해 진행된다.
                 );
     }
 }
