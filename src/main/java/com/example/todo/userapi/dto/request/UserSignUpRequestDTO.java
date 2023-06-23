@@ -1,4 +1,4 @@
-package com.example.todo.userapi.service.dto.request;
+package com.example.todo.userapi.dto.request;
 
 import com.example.todo.userapi.entity.User;
 import lombok.*;
@@ -7,14 +7,11 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-@Setter
-@Getter
-@ToString
-@EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter @Getter
+@ToString @EqualsAndHashCode(of = "email")
+@NoArgsConstructor @AllArgsConstructor
 @Builder
-public class UserRequestSignUpDTO {
+public class UserSignUpRequestDTO {
 
     @NotBlank
     @Email
@@ -30,7 +27,7 @@ public class UserRequestSignUpDTO {
 
     public User toEntity() {
         return User.builder()
-                .email(this.getEmail())
+                .email(this.email)
                 .password(this.password)
                 .userName(this.userName)
                 .build();

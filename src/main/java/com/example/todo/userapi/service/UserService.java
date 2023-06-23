@@ -1,9 +1,11 @@
 package com.example.todo.userapi.service;
 
+import com.example.todo.exception.DuplicatedEmailException;
+import com.example.todo.exception.NoRegisteredArgumentException;
 import com.example.todo.userapi.dto.UserSignUpResponseDTO;
+import com.example.todo.userapi.dto.request.UserSignUpRequestDTO;
 import com.example.todo.userapi.entity.User;
 import com.example.todo.userapi.repository.UserRepository;
-import com.example.todo.userapi.service.dto.request.UserRequestSignUpDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,16 +19,16 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
 
-    public UserSignUpResponseDTO create(UserRequestSignUpDTO dto) {
+    public UserSignUpResponseDTO create(final UserSignUpRequestDTO dto) throws RuntimeException{
 
         String email = dto.getEmail();
 
         if(dto == null){
-            throw new RuntimeException("가입 정보가 없습니다.");
+            throw new NoRegisteredArgumentException("가입 정보가 없습니다.");
         }
-        if(userRepository.existsByEmail(email)){
+        if(isDuplicate(email)){
             log.warn("이메일 중복 - {}", email);
-            throw new RuntimeException("중복된 이메일 입니다.");
+            throw new DuplicatedEmailException("중복된 이메일 입니다.");
         }
 
         //패스워드 인코딩
