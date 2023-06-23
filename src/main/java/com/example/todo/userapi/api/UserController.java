@@ -1,5 +1,7 @@
 package com.example.todo.userapi.api;
 
+import com.example.todo.exception.DuplicatedEmailException;
+import com.example.todo.exception.NoRegisteredArgumentException;
 import com.example.todo.userapi.dto.UserSignUpResponseDTO;
 import com.example.todo.userapi.dto.request.UserSignUpRequestDTO;
 import com.example.todo.userapi.service.UserService;
@@ -41,7 +43,16 @@ public class UserController {
             log.warn(result.toString());
             return ResponseEntity.badRequest().body(result.getFieldError());
         }
-        UserSignUpResponseDTO responseDTO = userService.create(dto);
-        return null;
+        try {
+            UserSignUpResponseDTO responseDTO = userService.create(dto);
+            return ResponseEntity.ok().body(responseDTO);
+        } catch (NoRegisteredArgumentException e) {
+            log.warn("필수 가입 정보를 전달받지 못했다.");
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (DuplicatedEmailException e){
+            log.warn("이메일이 중복되었다 - {}.");
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 }
