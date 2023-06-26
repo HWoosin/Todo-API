@@ -39,6 +39,7 @@ public class User {
     private LocalDateTime joinDate;
 
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("'COMMON'")//enum타입은 홑따옴표로 감싸준다.
-    private Role role; //유저권한
+//    @ColumnDefault("'COMMON'")//enum타입은 홑따옴표로 감싸준다.
+    @Builder.Default
+    private Role role = Role.COMMON; //유저권한
 }
