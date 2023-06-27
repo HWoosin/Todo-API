@@ -42,9 +42,14 @@ public class TodoController {
         }
 
         try {
-            TodoListResponseDTO responseDTO = todoService.insert(requestDTO,userInfo.getUserId());
+            TodoListResponseDTO responseDTO = todoService.insert(requestDTO, userInfo);
             return ResponseEntity.ok(responseDTO);
-        } catch (Exception e) {
+        }
+        catch (IllegalStateException e){
+            log.warn(e.getMessage());
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+        catch (Exception e) {
             return ResponseEntity.internalServerError().body("에러");
         }
 

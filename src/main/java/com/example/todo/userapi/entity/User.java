@@ -9,7 +9,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @ToString
 @EqualsAndHashCode(of = "id")
 @NoArgsConstructor
@@ -42,4 +41,9 @@ public class User {
 //    @ColumnDefault("'COMMON'")//enum타입은 홑따옴표로 감싸준다.
     @Builder.Default
     private Role role = Role.COMMON; //유저권한
+
+    //등급 수정 메서드
+    public void changeRole(Role role){
+        this.role = role;
+    }
 }
