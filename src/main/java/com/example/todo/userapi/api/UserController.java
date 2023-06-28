@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Slf4j
@@ -42,15 +43,24 @@ public class UserController {
     //회원 가입 요청 처리
     //POST: /api/auth
     @PostMapping
-    public ResponseEntity<?> signup(@Validated @RequestBody UserSignUpRequestDTO dto, BindingResult result){
+    public ResponseEntity<?> signup(@Validated @RequestPart("user") UserSignUpRequestDTO dto,
+                                    @RequestPart(value = "profileImage", required = false)MultipartFile profileImg, //프로필 이미지가 없을수도있다.
+                                    BindingResult result){
         log.info("/api/auth POST - {}",dto);
 
         if(result.hasErrors()){
             log.warn(result.toString());
             return ResponseEntity.badRequest().body(result.getFieldError());
         }
+
+        String uploadedFilePath = null;
         try {
-            UserSignUpResponseDTO responseDTO = userService.create(dto);
+        if(profileImg != null) {
+            log.info("attached file name: {}", profileImg.getOriginalFilename());
+            uploadedFilePath = userService.uploadProfileImage(profileImg);
+        }
+
+            UserSignUpResponseDTO responseDTO = userService.create(dto, uploadedFilePath);
             return ResponseEntity.ok().body(responseDTO);
         } catch (NoRegisteredArgumentException e) {
             log.warn("필수 가입 정보를 전달받지 못했다.");
@@ -58,6 +68,11 @@ public class UserController {
         } catch (DuplicatedEmailException e){
             log.warn("이메일이 중복되었다 - {}.");
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        catch (Exception e){
+            log.warn("기타 예외가 발생했습니다.");
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
         }
     }
     
