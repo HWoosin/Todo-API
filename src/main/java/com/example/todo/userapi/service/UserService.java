@@ -130,6 +130,11 @@ public class UserService {
 
         return uniqueFileName;
     }
+
+    public String findProfilePath(String userId) {
+        User user = userRepository.findById(userId).orElseThrow();
+        return uploadRootPath + "/" + user.getProfileImg(); //그 유저의 이미지 파일경로의 파일 가져오기
+    }
 }
 
 
