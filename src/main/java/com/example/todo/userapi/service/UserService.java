@@ -2,6 +2,7 @@ package com.example.todo.userapi.service;
 
 import com.example.todo.auth.TokenProvider;
 import com.example.todo.auth.TokenUserInfo;
+import com.example.todo.aws.S3Service;
 import com.example.todo.exception.DuplicatedEmailException;
 import com.example.todo.exception.NoRegisteredArgumentException;
 import com.example.todo.userapi.dto.response.UserSignUpResponseDTO;
@@ -30,9 +31,10 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
     private final TokenProvider tokenProvider;
+    private final S3Service s3Service;
 
-    @Value("${upload.path}")
-    private String uploadRootPath;
+//    @Value("${upload.path}")
+//    private String uploadRootPath;
 
     public UserSignUpResponseDTO create(final UserSignUpRequestDTO dto, final String uploadedFilePath) throws RuntimeException{
 
@@ -117,23 +119,29 @@ public class UserService {
 
     public String uploadProfileImage(MultipartFile originalFile) throws IOException {
         //루트 디렉토리가 존재하는 지 확인 후 존재하지 않으면 생성
-        File rootDir = new File(uploadRootPath);
-        if(!rootDir.exists()) rootDir.mkdir();
+//        File rootDir = new File(uploadRootPath);
+//        if(!rootDir.exists()) rootDir.mkdir();
+        //이제 AWS s3에 넣을것임 
 
         //파일명을 유니크하게 변경
         String uniqueFileName = UUID.randomUUID()
                 +"_"+originalFile.getOriginalFilename();
 
         //파일을 저장
-        File uploadFile = new File(uploadRootPath + "/" + uniqueFileName);
-        originalFile.transferTo(uploadFile);
+//        File uploadFile = new File(uploadRootPath + "/" + uniqueFileName);
+//        originalFile.transferTo(uploadFile);
 
+        //파일을 S3 버킷에 저장 할것이다
+        String uploadUrl
+                = s3Service.uploadToS3Bucket(originalFile.getBytes(), uniqueFileName);
         return uniqueFileName;
+
     }
 
     public String findProfilePath(String userId) {
         User user = userRepository.findById(userId).orElseThrow();
-        return uploadRootPath + "/" + user.getProfileImg(); //그 유저의 이미지 파일경로의 파일 가져오기
+//        return uploadRootPath + "/" + user.getProfileImg(); //그 유저의 이미지 파일경로의 파일 가져오기
+        return user.getProfileImg();
     }
 }
 
