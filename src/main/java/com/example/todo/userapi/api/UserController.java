@@ -176,15 +176,16 @@ public class UserController {
     @GetMapping("/load-s3")
     public ResponseEntity<?> loadS3(
             @AuthenticationPrincipal TokenUserInfo userInfo
-    ){
-        log.info("/api/auth/load-s3 GET - user: {}",userInfo);
+    ) {
+        log.info("/api/auth/load-s3 GET - user: {}", userInfo);
 
         try {
             String profilePath = userService.findProfilePath(userInfo.getUserId());
             return ResponseEntity.ok().body(profilePath);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+
     }
 }

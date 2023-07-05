@@ -121,7 +121,7 @@ public class UserService {
         //루트 디렉토리가 존재하는 지 확인 후 존재하지 않으면 생성
 //        File rootDir = new File(uploadRootPath);
 //        if(!rootDir.exists()) rootDir.mkdir();
-        //이제 AWS s3에 넣을것임 
+        //이제 AWS s3에 넣을것임
 
         //파일명을 유니크하게 변경
         String uniqueFileName = UUID.randomUUID()
@@ -134,7 +134,7 @@ public class UserService {
         //파일을 S3 버킷에 저장 할것이다
         String uploadUrl
                 = s3Service.uploadToS3Bucket(originalFile.getBytes(), uniqueFileName);
-        return uniqueFileName;
+        return uploadUrl;
 
     }
 
